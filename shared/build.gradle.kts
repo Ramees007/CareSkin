@@ -5,8 +5,8 @@ plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidLibrary)
     alias(libs.plugins.kotlin.serialization)
-    id("com.rickclephas.kmp.nativecoroutines") version "1.0.0-ALPHA-48"
-    id("co.touchlab.skie") version "0.10.8"
+    alias(libs.plugins.nativecoroutines)
+    alias(libs.plugins.skie)
 }
 
 kotlin {
@@ -25,17 +25,17 @@ kotlin {
         iosTarget.binaries.framework {
             baseName = "Shared"
             isStatic = true
-            export("com.rickclephas.kmp:kmp-nativecoroutines-core:1.0.0-ALPHA-48")
+            export(libs.nativecoroutines.core)
             xcf.add(this)
         }
     }
-    
+
     sourceSets {
         commonMain.dependencies {
-            implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2")
+            implementation(libs.kotlinx.coroutines.core)
             implementation(libs.bundles.ktor)
-            implementation("io.ktor:ktor-serialization-kotlinx-json:2.3.11")
-            api("com.rickclephas.kmp:kmp-nativecoroutines-core:1.0.0-ALPHA-48")
+            implementation(libs.ktor.serialization.kotlinx.json)
+            api(libs.nativecoroutines.core)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)

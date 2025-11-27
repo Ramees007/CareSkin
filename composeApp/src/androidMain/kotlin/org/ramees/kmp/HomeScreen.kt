@@ -159,7 +159,7 @@ private fun TraitItem(
 
 @Preview
 @Composable
-private fun AppPreview() {
+private fun HomePreview() {
     MaterialTheme {
         Content(
             HomeState(
