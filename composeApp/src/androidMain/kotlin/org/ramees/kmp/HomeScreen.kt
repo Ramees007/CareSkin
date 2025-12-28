@@ -18,28 +18,32 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
+import dev.zacsweers.metro.createGraphFactory
 import org.jetbrains.compose.ui.tooling.preview.Preview
+import org.ramees.kmp.di.AppGraph
 import org.ramees.kmp.model.HomeEffect
 import org.ramees.kmp.model.HomeState
 import org.ramees.kmp.model.Refinement
 import org.ramees.kmp.model.Trait
 
 @Composable
-internal fun HomeScreen(onNavigateToDetails: () -> Unit) {
-    val viewModel: HomeViewModel = remember { HomeViewModel() }
+internal fun HomeScreen(
+    onNavigateToDetails: (data: String) -> Unit,
+    viewModel: HomeViewModel = viewModel(factory = createGraphFactory<AppGraph.Factory>().create().homeViewModelFactory)
+) {
     val state = viewModel.state.collectAsStateWithLifecycle()
 
     LaunchedEffect(Unit) {
         viewModel.effect.collect {
             when (it) {
                 is HomeEffect.NavigateToDetailPage -> {
-                    onNavigateToDetails()
+                    onNavigateToDetails(it.response)
                 }
             }
         }
