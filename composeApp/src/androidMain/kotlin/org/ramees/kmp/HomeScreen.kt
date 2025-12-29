@@ -24,9 +24,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
-import dev.zacsweers.metro.createGraphFactory
 import org.jetbrains.compose.ui.tooling.preview.Preview
-import org.ramees.kmp.di.AppGraph
+import org.ramees.kmp.di.createAppGraph
 import org.ramees.kmp.model.HomeEffect
 import org.ramees.kmp.model.HomeState
 import org.ramees.kmp.model.Refinement
@@ -35,7 +34,7 @@ import org.ramees.kmp.model.Trait
 @Composable
 internal fun HomeScreen(
     onNavigateToDetails: (data: String) -> Unit,
-    viewModel: HomeViewModel = viewModel(factory = createGraphFactory<AppGraph.Factory>().create().homeViewModelFactory)
+    viewModel: HomeViewModel = viewModel(factory = createAppGraph().homeViewModelFactory)
 ) {
     val state = viewModel.state.collectAsStateWithLifecycle()
 

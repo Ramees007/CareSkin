@@ -1,37 +1,33 @@
-//
-//  IosHomeViewModel.swift
-//  iosApp
-//
-//  Created by Ramees Thattarath on 25/09/25.
-//
-
 import Shared
 import SwiftUI
 import Combine
 import KMPNativeCoroutinesAsync
 
 @MainActor
-class IosHomeViewModel: ObservableObject {
+final class IosHomeViewModel: ObservableObject {
     
+    @Published var state: HomeState =  HomeState(title: "", refinements: [], loading: false)
     private let delegate: HomeViewModel
+    private var task: Task<Void, Never>?
     
-    @Published var state: HomeState = HomeState(title: "", refinements: [], loading: false)
-    
-    
-    init() {
-        self.delegate = HomeViewModel()
+    init(viewModel: HomeViewModel) {
+        self.delegate = viewModel
+        self.state = delegate.state
         
-        Task {
+        task = Task { [weak self] in
+            guard let self else { return }
             do {
                 let sequence = asyncSequence(for: delegate.stateFlow)
                 for try await state in sequence {
                     self.state = state
                 }
+            } catch is CancellationError {
+                // Expected during deinit / view disappearance
             } catch {
-                print("Failed with error: \(error)")
+                print("StateFlow failed:", error)
             }
+            
         }
-        
     }
     
     func handleTraitClick(trait: String, refinement: String) {
@@ -44,6 +40,10 @@ class IosHomeViewModel: ObservableObject {
     
     func handleSubmitClick() {
         delegate.handleSubmit()
+    }
+    
+    deinit {
+        task?.cancel()
     }
 }
 

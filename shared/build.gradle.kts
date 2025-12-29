@@ -1,6 +1,7 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.plugin.mpp.apple.XCFramework
 import com.codingfeline.buildkonfig.compiler.FieldSpec.Type.STRING
+import java.util.Properties
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
@@ -29,6 +30,7 @@ kotlin {
             baseName = "Shared"
             isStatic = true
             export(libs.nativecoroutines.core)
+            export(libs.androidx.lifecycle.viewmodel)
             xcf.add(this)
         }
     }
@@ -72,11 +74,17 @@ android {
 }
 
 buildkonfig {
-    packageName = "org.ramees.kmp"
+    packageName = "org.ramees.kmp.shared"
+
+    val secretPropsFile = rootProject.file("shared/secrets.properties")
+    val secretProperties = Properties()
+    if(secretPropsFile.exists()){
+        secretProperties.load(secretPropsFile.inputStream())
+    }
 
     // Provides fallback values for all variants
     defaultConfigs {
-        buildConfigField(STRING, "OPEN_ROUTER_KEY", "")
+        buildConfigField(STRING, "OPEN_ROUTER_KEY", (secretProperties["OPEN_ROUTER_KEY"] as? String) ?: "")
     }
 
 //    Uncomment for flavored overrides
