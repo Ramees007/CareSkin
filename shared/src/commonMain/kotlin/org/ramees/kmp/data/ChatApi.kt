@@ -1,7 +1,7 @@
 package org.ramees.kmp.data
 
+import dev.zacsweers.metro.Inject
 import io.ktor.client.call.body
-import io.ktor.client.request.get
 import io.ktor.client.request.header
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
@@ -12,14 +12,16 @@ import kotlinx.serialization.json.jsonArray
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
 import org.ramees.kmp.expects.client
+import org.ramees.kmp.shared.BuildKonfig
 
+@Inject
 class ChatApi {
 
     suspend fun get(prompt: String): String = runCatching {
         val response = client.post("https://openrouter.ai/api/v1/responses") {
             header(
                 "Authorization",
-                "Bearer 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"
+                "Bearer ${BuildKonfig.OPEN_ROUTER_KEY}"
             )
             contentType(ContentType.Application.Json)
             setBody(

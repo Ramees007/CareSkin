@@ -14,15 +14,19 @@ fun App() = MaterialTheme {
         composable("home") {
             HomeScreen(
                 onNavigateToDetails = {
-                    navController.navigate("details")
+                    navController.navigate(
+                        "details/{recommendation_data}".replace(
+                            "{recommendation_data}",
+                            it
+                        )
+                    )
                 }
             )
         }
 
-        composable("details") {
-            DetailsScreen()
+        composable("details/{recommendation_data}") {
+            DetailsScreen(it.arguments?.getString("recommendation_data", "").orEmpty())
         }
-
     }
 }
 

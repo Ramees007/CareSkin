@@ -1,8 +1,10 @@
 package org.ramees.kmp
 
+import dev.zacsweers.metro.Inject
 import org.ramees.kmp.data.ChatRepo
 
-class GetRecommendationUseCase(private val chatRepo: ChatRepo = ChatRepo()) {
+@Inject
+class GetRecommendationUseCase(private val chatRepo: ChatRepo) {
 
     suspend fun get(prompt: String) = chatRepo.getRecommendation(prompt)
 }
