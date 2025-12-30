@@ -1,8 +1,8 @@
 package org.ramees.kmp
 
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -13,9 +13,13 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
@@ -55,50 +59,26 @@ internal fun HomeScreen(
     )
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun Content(
     state: HomeState,
     onTraitClick: (trait: String, refinement: String) -> Unit,
     onSubmit: () -> Unit
-) {
-    LazyColumn(modifier = Modifier.background(Color.White)) {
-        stickyHeader(key = "header", contentType = 0) {
-            Text(
-                text = state.title,
-                style = MaterialTheme.typography.headlineMedium,
-                modifier = Modifier
-                    .padding(16.dp)
-            )
-        }
-
+) = Scaffold(
+    topBar = {
+        TopAppBar(title = { Text(state.title) })
+    },
+    bottomBar = {
+        StickyBottom(loading = state.loading, onSubmit = onSubmit)
+    }
+) { innerPadding ->
+    LazyColumn(
+        modifier = Modifier
+            .padding(innerPadding)
+    ) {
         items(items = state.refinements, key = { it.name }) { refinement ->
             RefinementItem(refinement, onTraitClick)
-        }
-
-        item(key = "submit", contentType = 1) {
-            if (state.loading) {
-                Box(
-                    modifier = Modifier.fillMaxWidth(),
-                    contentAlignment = Alignment.Center
-                ) {
-                    CircularProgressIndicator(
-                        modifier = Modifier.width(40.dp),
-                        color = MaterialTheme.colorScheme.secondary,
-                        trackColor = MaterialTheme.colorScheme.surfaceVariant,
-                    )
-                }
-
-            } else {
-                Button(
-                    onClick = onSubmit,
-                    modifier = Modifier
-                        .padding(horizontal = 16.dp)
-                        .fillMaxWidth()
-                ) {
-                    Text("Submit")
-                }
-            }
-
         }
     }
 }
@@ -107,21 +87,21 @@ private fun Content(
 private fun RefinementItem(
     refinement: Refinement,
     onTraitClick: (trait: String, refinement: String) -> Unit
-) = Column {
+) = Column(
+    modifier = Modifier.padding(16.dp),
+    verticalArrangement = Arrangement.spacedBy(8.dp)
+) {
     Text(
         text = refinement.name,
-        style = MaterialTheme.typography.headlineSmall,
-        modifier = Modifier
-            .padding(16.dp)
+        style = MaterialTheme.typography.titleLarge
     )
 
     refinement.rows.forEach { row ->
-        Row {
+        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             row.forEach { trait ->
                 TraitItem(
                     trait = trait,
                     modifier = Modifier
-                        .padding(8.dp)
                         .weight(1f),
                     onTraitClick = {
                         onTraitClick(trait.name, refinement.name)
@@ -134,7 +114,8 @@ private fun RefinementItem(
 
 @Composable
 private fun TraitItem(
-    trait: Trait, modifier: Modifier = Modifier,
+    trait: Trait,
+    modifier: Modifier = Modifier,
     onTraitClick: (Trait) -> Unit
 ) {
     val border = if (trait.isSelected) {
@@ -149,7 +130,8 @@ private fun TraitItem(
         border = border,
         modifier = modifier.clickable {
             onTraitClick(trait)
-        }
+        },
+        colors = CardDefaults.cardColors(containerColor = if (trait.isSelected) MaterialTheme.colorScheme.surfaceVariant else Color.Unspecified)
     ) {
         Text(
             text = trait.name,
@@ -160,10 +142,40 @@ private fun TraitItem(
     }
 }
 
+@Composable
+private fun StickyBottom(
+    loading: Boolean,
+    onSubmit: () -> Unit
+) = Box(modifier = Modifier.padding(bottom = 24.dp)) {
+    if (loading) {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth(),
+            contentAlignment = Alignment.Center
+        ) {
+            CircularProgressIndicator(
+                modifier = Modifier.width(40.dp),
+                color = MaterialTheme.colorScheme.secondary,
+                trackColor = MaterialTheme.colorScheme.surfaceVariant,
+            )
+        }
+
+    } else {
+        Button(
+            onClick = onSubmit,
+            modifier = Modifier
+                .padding(horizontal = 16.dp)
+                .fillMaxWidth()
+        ) {
+            Text("Submit")
+        }
+    }
+}
+
 @Preview
 @Composable
 private fun HomePreview() {
-    MaterialTheme {
+    AppTheme {
         Content(
             HomeState(
                 title = "Skin Questionnaire",
