@@ -2,9 +2,11 @@ package org.ramees.kmp
 
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 
 @Composable
 fun App() = MaterialTheme {
@@ -14,18 +16,24 @@ fun App() = MaterialTheme {
         composable("home") {
             HomeScreen(
                 onNavigateToDetails = {
+                    navController.currentBackStackEntry
+                        ?.savedStateHandle
+                        ?.set("recommendation_data", it)
                     navController.navigate(
-                        "details/{recommendation_data}".replace(
-                            "{recommendation_data}",
-                            it
-                        )
+                        "details"
                     )
                 }
             )
         }
 
-        composable("details/{recommendation_data}") {
-            DetailsScreen(it.arguments?.getString("recommendation_data", "").orEmpty())
+        composable(
+            route = "details"
+        ) {
+            val data =
+                navController.previousBackStackEntry
+                    ?.savedStateHandle
+                    ?.get<String>("recommendation_data")
+            DetailsScreen(data.orEmpty())
         }
     }
 }

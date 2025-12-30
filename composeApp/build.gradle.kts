@@ -21,6 +21,7 @@ kotlin {
             implementation(compose.preview)
             implementation(libs.androidx.activity.compose)
             implementation(libs.androidx.navigation.compose)
+            implementation(libs.compose.markdown)
         }
         commonMain.dependencies {
             implementation(compose.runtime)
