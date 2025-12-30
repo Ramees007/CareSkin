@@ -58,13 +58,13 @@ class HomeViewModel(private val getRecommendationUseCase: GetRecommendationUseCa
 
     fun handleSubmit() = viewModelScope.launch {
         val selection = _state.value.refinements.associate {
-            val values: List<String> = it.rows.flatMap { it.map { it.name } }
+            val values: List<String> = it.rows.flatMap { it.filter { it.isSelected }.map { it.name } }
             it.name to values
         }
         _state.value = _state.value.copy(loading = true)
         val res =
             getRecommendationUseCase.get("Provide skincare recommendations based on the following traits: $selection, Be very brief - below 100 words.")
-//        delay(1000)
+        _state.value = _state.value.copy(loading = false)
         navigate(res)
     }
 
