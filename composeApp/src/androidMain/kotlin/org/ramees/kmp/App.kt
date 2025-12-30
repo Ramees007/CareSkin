@@ -30,7 +30,12 @@ fun App() = AppTheme {
                 navController.previousBackStackEntry
                     ?.savedStateHandle
                     ?.get<String>("recommendation_data")
-            DetailsScreen(data.orEmpty())
+            DetailsScreen(
+                data = data.orEmpty(),
+                onBack = {
+                    navController.navigateUp()
+                }
+            )
         }
     }
 }

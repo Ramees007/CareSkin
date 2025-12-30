@@ -24,6 +24,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -67,7 +68,14 @@ private fun Content(
     onSubmit: () -> Unit
 ) = Scaffold(
     topBar = {
-        TopAppBar(title = { Text(state.title) })
+        TopAppBar(
+            title = { Text(state.title) },
+            modifier = Modifier.shadow(
+                elevation = 8.dp,
+                spotColor = MaterialTheme.colorScheme.tertiary,
+                ambientColor = MaterialTheme.colorScheme.tertiary
+            )
+        )
     },
     bottomBar = {
         StickyBottom(loading = state.loading, onSubmit = onSubmit)
