@@ -16,6 +16,9 @@ This is a Kotlin Multiplatform project targeting Android, iOS.
   The most important subfolder is [commonMain](./shared/src/commonMain/kotlin). If preferred, you
   can add code to the platform-specific folders here too.
 
+### Screen Capture
+[Android recording](./attachments/CareSkinAndroid.webm)
+
 ### Build and Run Android Application
 
 To build and run the development version of the Android app, use the run configuration from the run widget
