@@ -18,6 +18,7 @@ This is a Kotlin Multiplatform project targeting Android, iOS.
 
 ### Screen Capture
 [Android recording](./attachments/CareSkinAndroid.webm)
+[iOS recording](./attachments/ios_screenrecord.mov)
 
 ### Build and Run Android Application
 
